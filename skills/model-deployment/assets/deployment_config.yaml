@@ -1,0 +1,143 @@
+# LLM Deployment Configuration
+# Production settings for model serving
+
+# Server Configuration
+server:
+  host: 0.0.0.0
+  port: 8000
+  workers: 4
+  timeout: 120
+  max_batch_size: 32
+  max_concurrent_requests: 100
+
+# Model Configuration
+model:
+  name: meta-llama/Llama-2-7b-chat-hf
+  revision: main
+  dtype: float16  # float16, bfloat16, float32, int8, int4
+  device_map: auto
+  trust_remote_code: false
+  max_model_len: 4096
+
+# Quantization
+quantization:
+  enabled: true
+  method: bitsandbytes  # bitsandbytes, gptq, awq
+  bits: 4
+  compute_dtype: bfloat16
+
+# vLLM Settings
+vllm:
+  tensor_parallel_size: 1
+  gpu_memory_utilization: 0.9
+  swap_space: 4  # GB
+  enforce_eager: false
+  max_num_batched_tokens: 4096
+  max_num_seqs: 256
+
+# TGI Settings
+tgi:
+  max_input_length: 4096
+  max_total_tokens: 8192
+  max_batch_prefill_tokens: 4096
+  waiting_served_ratio: 1.2
+  max_waiting_tokens: 20
+
+# Generation Defaults
+generation:
+  temperature: 0.7
+  top_p: 0.9
+  top_k: 50
+  max_tokens: 512
+  repetition_penalty: 1.1
+  do_sample: true
+
+# Rate Limiting
+rate_limiting:
+  enabled: true
+  requests_per_minute: 60
+  tokens_per_minute: 100000
+  burst_limit: 10
+
+# Caching
+cache:
+  enabled: true
+  backend: redis  # memory, redis, disk
+  ttl: 3600
+  max_size: 10000
+
+  redis:
+    host: localhost
+    port: 6379
+    db: 0
+
+# Health Checks
+health:
+  endpoint: /health
+  interval: 30
+  timeout: 10
+  unhealthy_threshold: 3
+
+# Monitoring
+monitoring:
+  prometheus:
+    enabled: true
+    port: 9090
+
+  metrics:
+    - request_latency
+    - tokens_per_second
+    - batch_size
+    - queue_length
+    - gpu_utilization
+    - memory_usage
+
+# Logging
+logging:
+  level: INFO
+  format: json
+  log_requests: true
+  log_responses: false
+  log_tokens: true
+
+# Security
+security:
+  api_key:
+    enabled: true
+    header: X-API-Key
+
+  cors:
+    enabled: true
+    origins:
+      - "*"
+
+  ssl:
+    enabled: false
+    cert_file: ""
+    key_file: ""
+
+# Docker Settings
+docker:
+  image: llm-inference:latest
+  runtime: nvidia
+  shm_size: 1g
+  volumes:
+    - ./models:/root/.cache/huggingface
+
+# Kubernetes Settings
+kubernetes:
+  replicas: 2
+  resources:
+    requests:
+      memory: 24Gi
+      nvidia.com/gpu: 1
+    limits:
+      memory: 32Gi
+      nvidia.com/gpu: 1
+
+  autoscaling:
+    enabled: true
+    min_replicas: 1
+    max_replicas: 10
+    target_cpu: 70
+    target_memory: 80

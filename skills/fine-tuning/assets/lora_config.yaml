@@ -1,0 +1,186 @@
+# LoRA Fine-Tuning Configuration
+# Production-ready settings for efficient LLM adaptation
+
+# Base Model Configuration
+base_model:
+  name: meta-llama/Llama-2-7b-hf
+  dtype: float16  # float16, bfloat16, float32
+  device_map: auto
+  trust_remote_code: false
+
+# LoRA Configuration
+lora:
+  r: 16                      # Rank (4, 8, 16, 32, 64)
+  lora_alpha: 32             # Alpha scaling (usually 2x rank)
+  lora_dropout: 0.05         # Dropout for regularization
+  bias: none                 # none, all, lora_only
+
+  # Target modules (model-specific)
+  target_modules:
+    llama:
+      - q_proj
+      - k_proj
+      - v_proj
+      - o_proj
+      # Optional for more capacity:
+      # - gate_proj
+      # - up_proj
+      # - down_proj
+
+    mistral:
+      - q_proj
+      - k_proj
+      - v_proj
+      - o_proj
+
+    gpt2:
+      - c_attn
+      - c_proj
+
+  # Task type
+  task_type: CAUSAL_LM  # CAUSAL_LM, SEQ_2_SEQ_LM, SEQ_CLS, TOKEN_CLS
+
+# Quantization (QLoRA)
+quantization:
+  enabled: true
+  load_in_4bit: true
+  bnb_4bit_quant_type: nf4
+  bnb_4bit_compute_dtype: bfloat16
+  bnb_4bit_use_double_quant: true
+
+# Training Configuration
+training:
+  # Batch settings
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 4
+  # Effective batch = 4 * 4 = 16
+
+  # Epochs and steps
+  num_train_epochs: 3
+  max_steps: -1  # -1 for full epochs
+
+  # Learning rate
+  learning_rate: 2.0e-4
+  lr_scheduler_type: cosine
+  warmup_ratio: 0.03
+
+  # Optimization
+  optim: paged_adamw_32bit
+  weight_decay: 0.001
+  max_grad_norm: 0.3
+
+  # Mixed precision
+  fp16: false
+  bf16: true
+
+  # Memory optimization
+  gradient_checkpointing: true
+
+  # Logging
+  logging_steps: 10
+  logging_first_step: true
+
+  # Evaluation
+  eval_strategy: steps
+  eval_steps: 100
+  eval_accumulation_steps: 1
+
+  # Saving
+  save_strategy: steps
+  save_steps: 100
+  save_total_limit: 3
+  load_best_model_at_end: true
+
+  # Output
+  output_dir: ./output
+  overwrite_output_dir: true
+  report_to: tensorboard
+
+# Dataset Configuration
+dataset:
+  # Format
+  format: alpaca  # alpaca, sharegpt, completion, custom
+
+  # Columns
+  instruction_column: instruction
+  input_column: input
+  output_column: output
+
+  # Preprocessing
+  max_seq_length: 512
+  packing: false  # Pack multiple samples per sequence
+  add_eos_token: true
+
+  # Train/Val split
+  train_split: train
+  eval_split: null  # null for auto-split
+  eval_size: 0.1
+
+# Data formatting templates
+templates:
+  alpaca: |
+    ### Instruction:
+    {instruction}
+
+    ### Input:
+    {input}
+
+    ### Response:
+    {output}
+
+  sharegpt: |
+    <s>[INST] <<SYS>>
+    {system}
+    <</SYS>>
+
+    {instruction} [/INST] {output}</s>
+
+  completion: |
+    {input}{output}
+
+# Callbacks
+callbacks:
+  early_stopping:
+    enabled: true
+    patience: 3
+    threshold: 0.01
+
+  wandb:
+    enabled: false
+    project: llm-finetuning
+    entity: null
+
+# Inference Configuration
+inference:
+  max_new_tokens: 256
+  temperature: 0.7
+  top_p: 0.9
+  top_k: 50
+  do_sample: true
+  num_beams: 1
+  repetition_penalty: 1.1
+
+# Post-Training
+post_training:
+  merge_adapter: true
+  push_to_hub: false
+  hub_model_id: null
+
+# Hardware Requirements (Estimates)
+requirements:
+  7b_lora:
+    vram: 8GB
+    ram: 16GB
+
+  7b_qlora:
+    vram: 6GB
+    ram: 16GB
+
+  13b_qlora:
+    vram: 12GB
+    ram: 24GB
+
+  70b_qlora:
+    vram: 48GB
+    ram: 64GB

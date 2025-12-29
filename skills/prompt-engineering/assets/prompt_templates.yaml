@@ -1,0 +1,287 @@
+# Prompt Templates Library
+# Reusable templates for common AI engineering tasks
+
+# System Prompts by Role
+system_prompts:
+  expert_advisor:
+    template: |
+      You are an expert {domain} with {years}+ years of experience.
+      Provide detailed, accurate, and actionable advice.
+      Always cite sources when making claims.
+      Ask clarifying questions if the request is ambiguous.
+    variables:
+      - domain
+      - years
+    example:
+      domain: machine learning engineer
+      years: 15
+
+  code_assistant:
+    template: |
+      You are a senior software engineer specializing in {language}.
+      Write clean, efficient, and well-documented code.
+      Follow {style_guide} conventions.
+      Include error handling and edge cases.
+      Explain your implementation choices.
+    variables:
+      - language
+      - style_guide
+    example:
+      language: Python
+      style_guide: PEP 8
+
+  data_analyst:
+    template: |
+      You are a data analyst helping interpret {data_type}.
+      Explain insights in simple terms for non-technical audiences.
+      Highlight key findings and recommendations.
+      Note any limitations or caveats in the analysis.
+    variables:
+      - data_type
+    example:
+      data_type: sales metrics
+
+# Task-Specific Templates
+task_templates:
+  classification:
+    template: |
+      Classify the following {item_type} into one of these categories:
+      {categories}
+
+      {item_type}: {input}
+
+      Classification:
+    variables:
+      - item_type
+      - categories
+      - input
+    example:
+      item_type: customer feedback
+      categories: "Positive, Negative, Neutral, Feature Request, Bug Report"
+      input: "The app crashes when I try to upload photos"
+
+  extraction:
+    template: |
+      Extract the following information from the text:
+      {fields}
+
+      Text: {input}
+
+      Respond in JSON format with the specified fields.
+    variables:
+      - fields
+      - input
+    output_format: json
+
+  summarization:
+    template: |
+      Summarize the following {content_type} in {length} sentences.
+      Focus on: {focus_areas}
+
+      {content_type}: {input}
+
+      Summary:
+    variables:
+      - content_type
+      - length
+      - focus_areas
+      - input
+
+  translation:
+    template: |
+      Translate the following text from {source_lang} to {target_lang}.
+      Maintain the original tone and style.
+      Preserve any technical terminology.
+
+      Original: {input}
+
+      Translation:
+    variables:
+      - source_lang
+      - target_lang
+      - input
+
+# Chain-of-Thought Templates
+cot_templates:
+  step_by_step:
+    template: |
+      {problem}
+
+      Let's solve this step by step:
+      1. First, I'll identify what we know...
+      2. Next, I'll determine what we need to find...
+      3. Then, I'll apply the relevant approach...
+      4. Finally, I'll verify the result...
+
+      Step 1:
+    use_case: Complex problem solving
+
+  reasoning_trace:
+    template: |
+      Question: {question}
+
+      I need to think about this carefully.
+
+      Reasoning:
+      - Initial observation: ...
+      - Key consideration: ...
+      - Potential approach: ...
+      - Analysis: ...
+
+      Therefore, the answer is:
+    use_case: Logical reasoning
+
+  self_critique:
+    template: |
+      Task: {task}
+
+      Initial Response:
+      {initial_response}
+
+      Now let me critically evaluate this response:
+      - Strengths: ...
+      - Weaknesses: ...
+      - Missing elements: ...
+      - Potential improvements: ...
+
+      Improved Response:
+    use_case: Quality improvement
+
+# Few-Shot Templates
+few_shot_templates:
+  sentiment_analysis:
+    template: |
+      Classify the sentiment of each text.
+
+      Text: "This product exceeded my expectations!"
+      Sentiment: Positive
+
+      Text: "Terrible quality, broke after one day."
+      Sentiment: Negative
+
+      Text: "It's okay, nothing special."
+      Sentiment: Neutral
+
+      Text: "{input}"
+      Sentiment:
+    variables:
+      - input
+
+  entity_extraction:
+    template: |
+      Extract entities from the text.
+
+      Text: "John Smith works at Google in Mountain View."
+      Entities: {person: "John Smith", organization: "Google", location: "Mountain View"}
+
+      Text: "Apple announced the iPhone 15 in September 2023."
+      Entities: {organization: "Apple", product: "iPhone 15", date: "September 2023"}
+
+      Text: "{input}"
+      Entities:
+    variables:
+      - input
+    output_format: json
+
+# Output Format Templates
+output_formats:
+  json_schema:
+    template: |
+      {instruction}
+
+      Respond in this exact JSON format:
+      ```json
+      {schema}
+      ```
+
+      Input: {input}
+
+      JSON Response:
+    validation: json_parse
+
+  markdown_report:
+    template: |
+      {instruction}
+
+      Use this markdown structure:
+
+      ## Summary
+      [2-3 sentence overview]
+
+      ## Key Findings
+      - Finding 1
+      - Finding 2
+      - Finding 3
+
+      ## Recommendations
+      1. [Action item 1]
+      2. [Action item 2]
+
+      ## Next Steps
+      [What to do next]
+
+      Input: {input}
+
+  table_format:
+    template: |
+      {instruction}
+
+      Present the results in a markdown table:
+
+      | Column1 | Column2 | Column3 |
+      |---------|---------|---------|
+      | value1  | value2  | value3  |
+
+      Input: {input}
+
+# Constraint Templates
+constraints:
+  length:
+    short: "Keep your response under 50 words."
+    medium: "Limit your response to 2-3 paragraphs."
+    detailed: "Provide a comprehensive response with examples."
+
+  style:
+    formal: "Use formal, professional language."
+    casual: "Use conversational, friendly language."
+    technical: "Use precise technical terminology."
+    eli5: "Explain like I'm 5 years old."
+
+  format:
+    bullets: "Use bullet points for clarity."
+    numbered: "Use numbered steps."
+    prose: "Write in prose format."
+    code: "Include code examples where helpful."
+
+# Meta-Prompts
+meta_prompts:
+  prompt_improver:
+    template: |
+      Improve this prompt to get better results from an LLM:
+
+      Original prompt: {original_prompt}
+
+      Consider:
+      - Clarity and specificity
+      - Output format specification
+      - Edge case handling
+      - Example inclusion
+
+      Improved prompt:
+
+  prompt_evaluator:
+    template: |
+      Evaluate this prompt's effectiveness:
+
+      Prompt: {prompt}
+
+      Rate on these criteria (1-10):
+      - Clarity: [score] - [reason]
+      - Specificity: [score] - [reason]
+      - Format guidance: [score] - [reason]
+      - Edge case handling: [score] - [reason]
+
+      Overall score: [average]
+      Top improvement suggestions:
+      1. ...
+      2. ...

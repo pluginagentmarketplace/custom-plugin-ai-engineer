@@ -1,0 +1,78 @@
+# LLM Configuration Template
+# Use this as starting point for different model deployments
+
+# Model Selection
+model:
+  provider: openai  # openai, anthropic, huggingface, local
+  name: gpt-4
+  version: latest
+
+# API Configuration
+api:
+  base_url: https://api.openai.com/v1
+  timeout: 30
+  max_retries: 3
+  retry_delay: 1.0
+
+# Generation Parameters
+generation:
+  temperature: 0.7
+  max_tokens: 1000
+  top_p: 0.9
+  top_k: 50
+  frequency_penalty: 0.0
+  presence_penalty: 0.0
+  stop_sequences:
+    - "\n\n"
+    - "###"
+
+# Context Configuration
+context:
+  max_context_length: 128000
+  system_prompt: |
+    You are a helpful assistant. Provide accurate,
+    concise, and well-structured responses.
+
+# Safety Settings
+safety:
+  content_filter: true
+  max_output_length: 4096
+  rate_limit: 60  # requests per minute
+
+# Cost Control
+cost:
+  max_cost_per_request: 0.50
+  daily_budget: 100.00
+  alert_threshold: 80  # percentage
+
+# Logging
+logging:
+  level: INFO
+  log_prompts: false
+  log_responses: false
+  log_tokens: true
+
+# Caching
+cache:
+  enabled: true
+  ttl: 3600  # seconds
+  max_size: 1000  # entries
+
+# Provider-Specific Settings
+providers:
+  openai:
+    organization: ""
+    api_key_env: OPENAI_API_KEY
+
+  anthropic:
+    api_key_env: ANTHROPIC_API_KEY
+    model: claude-3-opus-20240229
+
+  huggingface:
+    model_id: meta-llama/Llama-2-7b-chat-hf
+    device: cuda
+    quantization: 4bit
+
+  local:
+    endpoint: http://localhost:11434
+    model: llama2

@@ -1,0 +1,169 @@
+# LLM Evaluation Configuration
+# Comprehensive metrics and testing settings
+
+# Evaluation Mode
+mode: comprehensive  # quick, standard, comprehensive
+
+# Metrics Configuration
+metrics:
+  # Text Quality Metrics
+  text_quality:
+    - name: bleu
+      enabled: true
+      weights: [0.25, 0.25, 0.25, 0.25]
+
+    - name: rouge
+      enabled: true
+      variants: [rouge1, rouge2, rougeL]
+
+    - name: bertscore
+      enabled: true
+      model: microsoft/deberta-xlarge-mnli
+
+    - name: perplexity
+      enabled: true
+
+  # RAG-Specific Metrics
+  rag_metrics:
+    - name: faithfulness
+      enabled: true
+      threshold: 0.8
+
+    - name: answer_relevancy
+      enabled: true
+      threshold: 0.7
+
+    - name: context_precision
+      enabled: true
+      threshold: 0.7
+
+    - name: context_recall
+      enabled: true
+      threshold: 0.7
+
+  # Task-Specific Metrics
+  task_metrics:
+    classification:
+      - accuracy
+      - precision
+      - recall
+      - f1
+
+    generation:
+      - coherence
+      - fluency
+      - relevance
+
+    code:
+      - pass_at_k
+      - functional_correctness
+      - syntax_validity
+
+# Hallucination Detection
+hallucination:
+  enabled: true
+  methods:
+    - self_consistency
+    - factual_verification
+    - source_attribution
+
+  thresholds:
+    confidence: 0.8
+    consistency: 0.7
+
+# Safety Evaluation
+safety:
+  enabled: true
+  checks:
+    - toxicity
+    - bias
+    - harmful_content
+    - pii_leakage
+
+  models:
+    toxicity: unitary/toxic-bert
+    bias: d4data/bias-detection-model
+
+# Human Evaluation
+human_eval:
+  enabled: false
+  criteria:
+    - helpfulness
+    - accuracy
+    - clarity
+    - safety
+
+  scale: 1-5
+  min_annotators: 3
+
+# Benchmark Suites
+benchmarks:
+  mmlu:
+    enabled: true
+    subjects: all  # or list of specific subjects
+
+  humaneval:
+    enabled: true
+    k_values: [1, 10, 100]
+
+  truthfulqa:
+    enabled: true
+
+  hellaswag:
+    enabled: true
+
+# A/B Testing
+ab_testing:
+  enabled: true
+  sample_size: 1000
+  confidence_level: 0.95
+  metrics_to_compare:
+    - latency
+    - quality_score
+    - user_preference
+
+# Dataset Configuration
+datasets:
+  test_size: 0.2
+  stratify: true
+  seed: 42
+
+  sources:
+    - type: local
+      path: ./test_data.json
+
+    - type: huggingface
+      name: squad
+      split: validation
+
+# Reporting
+reporting:
+  format: markdown  # markdown, html, json
+  output_dir: ./evaluation_reports
+
+  include:
+    - summary
+    - detailed_metrics
+    - examples
+    - recommendations
+
+  visualizations:
+    - confusion_matrix
+    - score_distribution
+    - latency_histogram
+
+# Thresholds and Alerts
+thresholds:
+  quality:
+    minimum_score: 0.7
+    warning_score: 0.8
+
+  performance:
+    max_latency_p99: 2000  # ms
+    min_throughput: 10  # requests/sec
+
+  alerts:
+    enabled: true
+    channels:
+      - slack
+      - email

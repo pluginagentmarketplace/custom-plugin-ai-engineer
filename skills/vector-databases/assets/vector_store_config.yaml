@@ -1,0 +1,150 @@
+# Vector Store Configuration
+# Multi-provider settings for production deployments
+
+# Provider Selection
+provider: chroma  # chroma, pinecone, weaviate, milvus, qdrant, faiss
+
+# Embedding Configuration
+embeddings:
+  provider: openai
+  model: text-embedding-3-small
+  dimensions: 1536
+  batch_size: 100
+  normalize: true
+
+# Chroma (Local/Self-Hosted)
+chroma:
+  persist_directory: ./chroma_db
+  collection_name: documents
+  distance_fn: cosine  # cosine, l2, ip
+
+  # Client settings
+  client:
+    type: persistent  # ephemeral, persistent, http
+    host: localhost
+    port: 8000
+
+# Pinecone (Cloud)
+pinecone:
+  index_name: documents
+  environment: us-west1-gcp
+  api_key_env: PINECONE_API_KEY
+
+  # Index settings
+  index:
+    metric: cosine
+    dimension: 1536
+    pods: 1
+    replicas: 1
+    pod_type: p1.x1
+
+  # Namespace
+  namespace: default
+
+# Weaviate
+weaviate:
+  url: http://localhost:8080
+  api_key_env: WEAVIATE_API_KEY
+
+  # Schema
+  class_name: Document
+  properties:
+    - name: content
+      data_type: text
+    - name: source
+      data_type: text
+    - name: metadata
+      data_type: object
+
+  # Vectorizer
+  vectorizer: text2vec-openai
+  vectorizer_config:
+    model: text-embedding-ada-002
+
+# Milvus
+milvus:
+  host: localhost
+  port: 19530
+  user: ""
+  password: ""
+
+  collection:
+    name: documents
+    dimension: 1536
+
+  index:
+    type: IVF_FLAT  # FLAT, IVF_FLAT, IVF_SQ8, HNSW
+    metric_type: IP  # L2, IP, COSINE
+    params:
+      nlist: 1024  # For IVF
+
+  search:
+    params:
+      nprobe: 10
+
+# Qdrant
+qdrant:
+  url: http://localhost:6333
+  api_key_env: QDRANT_API_KEY
+
+  collection:
+    name: documents
+    vector_size: 1536
+    distance: Cosine  # Cosine, Euclid, Dot
+
+  # Optimizers
+  optimizers:
+    memmap_threshold: 20000
+    indexing_threshold: 20000
+
+# FAISS (Local)
+faiss:
+  index_path: ./faiss_index
+  index_type: IndexFlatIP  # IndexFlatIP, IndexIVFFlat, IndexHNSWFlat
+
+  # For IVF indexes
+  nlist: 100
+  nprobe: 10
+
+  # For HNSW
+  hnsw:
+    M: 32
+    efConstruction: 200
+    efSearch: 100
+
+# Search Configuration
+search:
+  top_k: 10
+  score_threshold: 0.7
+  include_metadata: true
+  include_vectors: false
+
+# Hybrid Search (if supported)
+hybrid:
+  enabled: true
+  alpha: 0.5  # Dense weight (1-alpha for sparse)
+  sparse_model: bm25
+
+# Metadata Filtering
+filtering:
+  enabled: true
+  indexed_fields:
+    - source
+    - category
+    - date
+
+# Performance
+performance:
+  batch_size: 100
+  max_connections: 10
+  timeout: 30
+  retry:
+    max_attempts: 3
+    backoff: exponential
+
+# Caching
+cache:
+  enabled: true
+  type: redis  # memory, redis
+  ttl: 3600
+  max_size: 10000

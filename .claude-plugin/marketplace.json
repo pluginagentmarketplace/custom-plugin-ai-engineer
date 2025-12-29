@@ -1,0 +1,11 @@
+{
+  "name": "pluginagentmarketplace-ai-engineer",
+  "plugins": [
+    {
+      "name": "ai-engineer-plugin",
+      "description": "AI Engineer Plugin - LLM development, prompt engineering, RAG systems, fine-tuning, and agent frameworks",
+      "source": "./",
+      "installInstructions": "Use `/plugin install ai-engineer-plugin@pluginagentmarketplace-ai-engineer`"
+    }
+  ]
+}

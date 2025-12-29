@@ -1,0 +1,35 @@
+{
+  "name": "ai-engineer-plugin",
+  "version": "1.0.0",
+  "description": "AI Engineer Plugin - LLM development, prompt engineering, RAG systems, fine-tuning, and agent frameworks",
+  "author": {
+    "name": "Dr. Umit Kacar & Muhsin Elcicek",
+    "email": "pluginagentmarketplace@gmail.com"
+  },
+  "repository": "https://github.com/pluginagentmarketplace/custom-plugin-ai-engineer",
+  "license": "MIT",
+  "agents": [
+    "./agents/01-llm-fundamentals.md",
+    "./agents/02-prompt-engineering.md",
+    "./agents/03-rag-systems.md",
+    "./agents/04-fine-tuning.md",
+    "./agents/05-evaluation-monitoring.md",
+    "./agents/06-ai-agents.md"
+  ],
+  "skills": [
+    "./skills/llm-basics/SKILL.md",
+    "./skills/prompt-engineering/SKILL.md",
+    "./skills/rag-systems/SKILL.md",
+    "./skills/fine-tuning/SKILL.md",
+    "./skills/vector-databases/SKILL.md",
+    "./skills/model-deployment/SKILL.md",
+    "./skills/evaluation-metrics/SKILL.md",
+    "./skills/agent-frameworks/SKILL.md"
+  ],
+  "commands": [
+    "./commands/ai-engineer.md",
+    "./commands/prompt-lab.md",
+    "./commands/rag-builder.md"
+  ],
+  "hooks": "./hooks/hooks.json"
+}

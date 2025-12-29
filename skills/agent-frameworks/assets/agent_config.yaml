@@ -1,0 +1,144 @@
+# AI Agent Configuration
+# Production settings for autonomous agents
+
+# Agent Identity
+agent:
+  name: research-assistant
+  description: An AI agent that can search, analyze, and synthesize information
+  version: 1.0.0
+
+# LLM Configuration
+llm:
+  provider: openai
+  model: gpt-4
+  temperature: 0.3
+  max_tokens: 1000
+  timeout: 30
+
+# System Prompt
+system_prompt: |
+  You are a helpful research assistant with access to various tools.
+  Always think step by step before taking action.
+  Be thorough but concise in your responses.
+  Cite sources when making factual claims.
+
+# Tools Configuration
+tools:
+  - name: web_search
+    description: Search the web for information
+    enabled: true
+    parameters:
+      query:
+        type: string
+        required: true
+      max_results:
+        type: integer
+        default: 5
+
+  - name: calculator
+    description: Perform mathematical calculations
+    enabled: true
+    parameters:
+      expression:
+        type: string
+        required: true
+
+  - name: code_executor
+    description: Execute Python code
+    enabled: false  # Disabled for safety
+    parameters:
+      code:
+        type: string
+        required: true
+      timeout:
+        type: integer
+        default: 30
+
+# Agent Behavior
+behavior:
+  # Planning
+  planning:
+    enabled: true
+    max_steps: 10
+    reflection: true
+
+  # Memory
+  memory:
+    type: buffer  # buffer, summary, entity
+    max_tokens: 4000
+    persist: false
+
+  # Error handling
+  error_handling:
+    max_retries: 3
+    fallback_response: "I encountered an error. Let me try a different approach."
+    log_errors: true
+
+# Safety Guardrails
+safety:
+  # Action limits
+  max_tool_calls: 20
+  max_iterations: 50
+
+  # Content filtering
+  content_filter:
+    enabled: true
+    block_harmful: true
+    block_pii: true
+
+  # Tool restrictions
+  restricted_actions:
+    - delete
+    - modify_system
+    - execute_arbitrary_code
+
+  # Human approval
+  require_approval:
+    - high_risk_actions
+    - external_api_calls
+
+# Multi-Agent Settings
+multi_agent:
+  enabled: false
+
+  roles:
+    - name: researcher
+      description: Gathers and analyzes information
+      model: gpt-4
+
+    - name: writer
+      description: Creates polished content
+      model: gpt-4
+
+    - name: critic
+      description: Reviews and improves outputs
+      model: gpt-4
+
+  coordination:
+    type: sequential  # sequential, parallel, hierarchical
+    max_rounds: 5
+
+# Logging and Monitoring
+logging:
+  level: INFO
+  format: json
+
+  log_events:
+    - tool_calls
+    - llm_requests
+    - errors
+    - agent_steps
+
+# Performance
+performance:
+  timeout_per_step: 60
+  max_concurrent_tools: 3
+  cache_tool_results: true
+
+# Callbacks
+callbacks:
+  on_step_start: null
+  on_step_end: null
+  on_tool_call: null
+  on_error: null
+  on_complete: null
