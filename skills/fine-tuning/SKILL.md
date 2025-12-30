@@ -267,3 +267,36 @@ model.set_adapter("default")  # Use default adapter
 | Overfitting | Too many epochs | Early stopping, more data |
 | Catastrophic forgetting | Too aggressive LR | Lower LR, shorter training |
 | Poor quality | Data issues | Clean and validate dataset |
+
+## Error Handling & Recovery
+
+```python
+from transformers import TrainerCallback
+
+class CheckpointCallback(TrainerCallback):
+    def on_save(self, args, state, control, **kwargs):
+        # Always keep last 3 checkpoints
+        pass
+
+    def on_epoch_end(self, args, state, control, **kwargs):
+        if state.best_metric is None:
+            # Save checkpoint on each epoch
+            control.should_save = True
+```
+
+## Troubleshooting
+
+| Symptom | Cause | Solution |
+|---------|-------|----------|
+| NaN loss | LR too high | Lower to 1e-5 |
+| No improvement | LR too low | Increase 10x |
+| OOM mid-training | Batch too large | Enable gradient checkpointing |
+
+## Unit Test Template
+
+```python
+def test_lora_config():
+    config = LoraConfig(r=16, lora_alpha=32)
+    model = get_peft_model(base_model, config)
+    assert model.print_trainable_parameters() < 1%
+```

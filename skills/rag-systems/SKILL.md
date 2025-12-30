@@ -233,3 +233,36 @@ def evaluate_rag(qa_pairs, rag_system):
 4. **Cache embeddings**: Avoid recomputation
 5. **Monitor retrieval**: Track relevance scores
 6. **Handle no-results**: Graceful fallback responses
+
+## Error Handling & Retry
+
+```python
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10))
+def embed_with_retry(text):
+    return embedding_model.encode(text)
+
+def query_with_fallback(question):
+    try:
+        return vector_search(question)
+    except Exception:
+        return keyword_search(question)  # Fallback
+```
+
+## Troubleshooting
+
+| Symptom | Cause | Solution |
+|---------|-------|----------|
+| No results | Threshold too high | Lower similarity_threshold |
+| Wrong answers | Poor chunking | Adjust chunk_size |
+| Slow queries | Large index | Add HNSW indexing |
+
+## Unit Test Template
+
+```python
+def test_rag_retrieval():
+    rag.index(["Test document"])
+    results = rag.search("test")
+    assert len(results) > 0
+```

@@ -136,3 +136,31 @@ outputs = llm.generate(["Hello, my name is"], sampling)
 3. **Temperature tuning**: Lower for facts, higher for creativity
 4. **Token efficiency**: Shorter prompts = lower costs
 5. **Streaming**: Use for better UX in applications
+
+## Error Handling & Retry
+
+```python
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10))
+def call_llm_with_retry(prompt: str) -> str:
+    return client.chat.completions.create(...)
+```
+
+## Troubleshooting
+
+| Symptom | Cause | Solution |
+|---------|-------|----------|
+| Rate limit errors | Too many requests | Add exponential backoff |
+| Empty response | max_tokens=0 | Check parameter values |
+| High latency | Large model | Use smaller model |
+| Timeout | Prompt too long | Reduce input size |
+
+## Unit Test Template
+
+```python
+def test_llm_completion():
+    response = call_llm("Hello")
+    assert response is not None
+    assert len(response) > 0
+```

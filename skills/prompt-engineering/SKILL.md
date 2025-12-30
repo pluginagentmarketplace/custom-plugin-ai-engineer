@@ -220,3 +220,32 @@ def build_prompt(task_type, context, examples=None):
 | Verbose responses | No length constraint | Specify max length/format |
 | Wrong tone | Missing persona | Add role/style instructions |
 | Off-topic answers | Unclear scope | Define boundaries explicitly |
+
+## Retry Logic for Format Failures
+
+```python
+def prompt_with_validation(prompt, validator, max_retries=3):
+    for _ in range(max_retries):
+        response = llm.generate(prompt)
+        if validator(response):
+            return response
+        prompt = f"Previous response invalid. {prompt}"
+    raise ValueError("Max retries exceeded")
+```
+
+## Troubleshooting
+
+| Symptom | Cause | Solution |
+|---------|-------|----------|
+| Wrong format | Weak instructions | Add explicit examples |
+| Too verbose | No length limit | Add word/sentence limits |
+| Refuses task | Safety trigger | Rephrase request |
+
+## Unit Test Template
+
+```python
+def test_prompt_generates_json():
+    response = llm.generate(json_prompt)
+    data = json.loads(response)
+    assert "field" in data
+```

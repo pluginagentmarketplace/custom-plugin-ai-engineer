@@ -339,3 +339,37 @@ if not safe_tool_filter(action_input):
 4. **Error handling**: Graceful degradation on failures
 5. **Cost monitoring**: Track token usage continuously
 6. **Human-in-loop**: Confirm high-stakes actions
+
+## Error Handling & Retry
+
+```python
+from tenacity import retry, stop_after_attempt
+
+class RobustAgent:
+    @retry(stop=stop_after_attempt(3))
+    def execute_tool(self, tool_name, input_data):
+        tool = self.tools[tool_name]
+        return tool.run(input_data)
+
+    def run_with_fallback(self, task):
+        try:
+            return self.agent.run(task)
+        except Exception as e:
+            return self.simple_llm_response(task)
+```
+
+## Troubleshooting
+
+| Symptom | Cause | Solution |
+|---------|-------|----------|
+| Infinite loop | No stop condition | Add max_iterations |
+| Wrong tool choice | Poor descriptions | Improve tool docs |
+| High cost | Many iterations | Set budget limits |
+
+## Unit Test Template
+
+```python
+def test_agent_tool_execution():
+    result = agent.run("Calculate 2+2")
+    assert "4" in result
+```
