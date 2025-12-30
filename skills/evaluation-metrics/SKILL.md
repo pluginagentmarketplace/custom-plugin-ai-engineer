@@ -367,3 +367,36 @@ class ABTester:
 4. **Regular benchmarking**: Track quality over time
 5. **Statistical significance**: Use proper sample sizes
 6. **Version everything**: Models, prompts, and test data
+
+## Error Handling & Retry
+
+```python
+from tenacity import retry, stop_after_attempt
+
+@retry(stop=stop_after_attempt(3))
+def evaluate_with_retry(model_output, reference):
+    return evaluator.evaluate(model_output, reference)
+
+def batch_evaluate(samples, batch_size=50):
+    results = []
+    for i in range(0, len(samples), batch_size):
+        batch = samples[i:i+batch_size]
+        results.extend([evaluate_with_retry(s) for s in batch])
+    return results
+```
+
+## Troubleshooting
+
+| Symptom | Cause | Solution |
+|---------|-------|----------|
+| Inconsistent scores | High temperature | Set temp=0 for evaluator |
+| Slow evaluation | No batching | Batch evaluations |
+| Missing metrics | Wrong format | Check data schema |
+
+## Unit Test Template
+
+```python
+def test_faithfulness_metric():
+    score = evaluate_faithfulness("Answer", ["Context"])
+    assert 0 <= score <= 1
+```

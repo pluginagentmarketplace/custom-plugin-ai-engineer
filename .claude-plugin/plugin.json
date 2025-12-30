@@ -1,6 +1,6 @@
 {
   "name": "ai-engineer-plugin",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "AI Engineer Plugin - LLM development, prompt engineering, RAG systems, fine-tuning, and agent frameworks",
   "author": {
     "name": "Dr. Umit Kacar & Muhsin Elcicek",

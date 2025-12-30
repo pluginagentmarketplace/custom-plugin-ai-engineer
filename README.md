@@ -6,7 +6,7 @@
 <br/>
 
 <!-- Badge Row 1: Status Badges -->
-[![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge)](https://github.com/pluginagentmarketplace/custom-plugin-ai-engineer/releases)
+[![Version](https://img.shields.io/badge/Version-1.1.0-blue?style=for-the-badge)](https://github.com/pluginagentmarketplace/custom-plugin-ai-engineer/releases)
 [![License](https://img.shields.io/badge/License-Custom-yellow?style=for-the-badge)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Production-brightgreen?style=for-the-badge)](#)
 [![SASMP](https://img.shields.io/badge/SASMP-v1.3.0-blueviolet?style=for-the-badge)](#)
@@ -14,7 +14,7 @@
 <!-- Badge Row 2: Content Badges -->
 [![Agents](https://img.shields.io/badge/Agents-6-orange?style=flat-square&logo=robot)](#-agents)
 [![Skills](https://img.shields.io/badge/Skills-8-purple?style=flat-square&logo=lightning)](#-skills)
-[![Commands](https://img.shields.io/badge/Commands-1-green?style=flat-square&logo=terminal)](#-commands)
+[![Commands](https://img.shields.io/badge/Commands-3-green?style=flat-square&logo=terminal)](#-commands)
 
 <br/>
 
@@ -111,7 +111,7 @@ ai-engineer-plugin:05-evaluation-monitoring
 |---------|-------------|
 | 🤖 **6 Agents** | Specialized AI agents for ai engineer tasks |
 | 🛠️ **8 Skills** | Reusable capabilities with Golden Format |
-| ⌨️ **1 Commands** | Quick slash commands |
+| ⌨️ **3 Commands** | Quick slash commands |
 | 🔄 **SASMP v1.3.0** | Full protocol compliance |
 
 ---
@@ -152,7 +152,9 @@ ai-engineer-plugin:05-evaluation-monitoring
 
 | Command | Description |
 |---------|-------------|
-| `/ai-engineer` | AI Engineer assistant for LLM development, RAG systems, and  |
+| `/ai-engineer` | AI Engineer assistant for LLM development, RAG systems, and AI applications |
+| `/prompt-lab` | Interactive prompt engineering lab for designing, testing, and optimizing prompts |
+| `/rag-builder` | RAG system builder for creating production-ready retrieval augmented generation pipelines |
 
 ---
 
@@ -178,7 +180,7 @@ custom-plugin-ai-engineer/
 │   └── marketplace.json
 ├── 📁 agents/              # 6 agents
 ├── 📁 skills/              # 8 skills (Golden Format)
-├── 📁 commands/            # 1 commands
+├── 📁 commands/            # 3 commands
 ├── 📁 hooks/
 ├── 📄 README.md
 ├── 📄 CHANGELOG.md
@@ -193,13 +195,13 @@ custom-plugin-ai-engineer/
 
 | Field | Value |
 |-------|-------|
-| **Version** | 1.0.0 |
-| **Last Updated** | 2025-12-29 |
+| **Version** | 1.1.0 |
+| **Last Updated** | 2025-12-30 |
 | **Status** | Production Ready |
 | **SASMP** | v1.3.0 |
 | **Agents** | 6 |
 | **Skills** | 8 |
-| **Commands** | 1 |
+| **Commands** | 3 |
 
 ---
 

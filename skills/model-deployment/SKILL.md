@@ -318,3 +318,37 @@ start_http_server(9090)
 4. **Cache responses**: For repeated queries
 5. **Set timeouts**: Prevent hung requests
 6. **Load balance**: Multiple replicas for high availability
+
+## Error Handling & Retry
+
+```python
+from tenacity import retry, stop_after_attempt, wait_exponential
+import httpx
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10))
+async def call_inference_api(prompt: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "http://localhost:8000/generate",
+            json={"prompt": prompt},
+            timeout=30.0
+        )
+        return response.json()
+```
+
+## Troubleshooting
+
+| Symptom | Cause | Solution |
+|---------|-------|----------|
+| OOM on load | Model too large | Use quantization |
+| High latency | No batching | Enable vLLM batching |
+| Connection refused | Server not started | Check health endpoint |
+
+## Unit Test Template
+
+```python
+def test_health_endpoint():
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json()["status"] == "healthy"
+```

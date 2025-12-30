@@ -273,3 +273,34 @@ def cached_search(query_hash: str):
 4. **Batch operations**: Better throughput for bulk inserts
 5. **Monitor latency**: Set alerts for p99 response times
 6. **Plan capacity**: Vectors grow fast, plan storage ahead
+
+## Error Handling & Retry
+
+```python
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=2, max=30))
+def upsert_with_retry(vectors):
+    return index.upsert(vectors=vectors)
+
+def batch_upsert(vectors, batch_size=100):
+    for i in range(0, len(vectors), batch_size):
+        upsert_with_retry(vectors[i:i+batch_size])
+```
+
+## Troubleshooting
+
+| Symptom | Cause | Solution |
+|---------|-------|----------|
+| Slow inserts | No batching | Batch upserts |
+| Poor recall | Wrong metric | Use cosine for text |
+| Connection timeout | Large payload | Reduce batch size |
+
+## Unit Test Template
+
+```python
+def test_vector_upsert_query():
+    store.upsert([{"id": "1", "values": [0.1]*384}])
+    results = store.query([0.1]*384, top_k=1)
+    assert results[0]["id"] == "1"
+```
