@@ -63,7 +63,7 @@
 
 ```bash
 # Step 1️⃣ Add the marketplace
-/plugin add marketplace pluginagentmarketplace/custom-plugin-ai-engineer
+/plugin marketplace add pluginagentmarketplace/custom-plugin-ai-engineer
 
 # Step 2️⃣ Install the plugin
 /plugin install ai-engineer-plugin@pluginagentmarketplace-ai-engineer

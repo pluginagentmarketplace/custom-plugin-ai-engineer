@@ -30,6 +30,5 @@
     "./commands/ai-engineer.md",
     "./commands/prompt-lab.md",
     "./commands/rag-builder.md"
-  ],
-  "hooks": "./hooks/hooks.json"
+  ]
 }
